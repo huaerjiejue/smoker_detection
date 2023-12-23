@@ -3,6 +3,7 @@
 # @Time : 2023/12/16 17:26
 # @Author : ZhangKuo
 import pytest
+
 from utils.data_process import DataProcess
 
 
@@ -14,10 +15,10 @@ class TestDataProcess:
 
     def test_get_data(self, data_process):
         data_process.get_data()
-        assert len(data_process._df) == 224
-        assert 'notsmoking' in data_process._df['label'].values
-        assert 'smoking' in data_process._df['label'].values
-        print(data_process._df.head())
+        assert len(data_process.df) == 224
+        assert 'notsmoking' in data_process.df['label'].values
+        assert 'smoking' in data_process.df['label'].values
+        print(data_process.df.head())
         assert True
 
     @pytest.fixture(scope="function")

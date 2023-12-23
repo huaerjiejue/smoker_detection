@@ -3,11 +3,14 @@
 # @Time : 2023/12/15 18:12
 # @Author : ZhangKuo
 import os
-from glob import glob
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
 import random
+from glob import glob
+import cv2
+from PIL import Image
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 from torch.utils.data import Dataset, DataLoader
 
 """
@@ -27,7 +30,7 @@ class DataProcess:
         label: 图片标签
         class: 图片类别
         """
-        self._df = pd.DataFrame({"path": [], "label": [], "class": []})
+        self.df = pd.DataFrame({"path": [], "label": [], "class": []})
         self._labels = ["notsmoking", "smoking"]
 
     def get_data(self):
@@ -52,10 +55,10 @@ class DataProcess:
                 )
             else:
                 raise ValueError("label error: " + label)
-            self._df = pd.concat([self._df, new_df], axis=0, ignore_index=True)
-        self._df["path"] = self._df["path"].astype(str)
-        self._df["label"] = self._df["label"].astype(str)
-        self._df["class"] = self._df["class"].astype(int)
+            self.df = pd.concat([self.df, new_df], axis=0, ignore_index=True)
+        self.df["path"] = self.df["path"].astype(str)
+        self.df["label"] = self.df["label"].astype(str)
+        self.df["class"] = self.df["class"].astype(int)
 
     def draw_data(self):
         """
@@ -63,7 +66,7 @@ class DataProcess:
         :return:
         """
         plt.figure(figsize=(10, 6))
-        sns.countplot(x="label", hue="class", data=self._df, palette="Set1")
+        sns.countplot(x="label", hue="class", data=self.df, palette="Set1")
         plt.title("Smoking and Not Smoking")
         plt.xlabel("Label")
         plt.ylabel("Count")
@@ -71,7 +74,7 @@ class DataProcess:
         plt.legend(["Not Smoking", "Smoking"])
 
         # 在每个柱子上添加具体的数字
-        for x, y in enumerate(self._df["class"].value_counts().values):
+        for x, y in enumerate(self.df["class"].value_counts().values):
             plt.text(x, y + 1, "%s" % y, ha="center", va="bottom")
 
         plt.show()
@@ -82,15 +85,18 @@ class DataProcess:
         :return:
         """
         show_num = 15
-        idxs = random.sample(range(len(self._df)), show_num)
+        idxs = random.sample(range(len(self.df)), show_num)
         flg, axs = plt.subplots(3, 5, figsize=(25, 15))
         for i, idx in enumerate(idxs):
-            img = plt.imread(self._df["path"][idx])
-            label = self._df["label"][idx]
+            img = plt.imread(self.df["path"][idx])
+            label = self.df["label"][idx]
             idx_x, idx_y = i // 5, i % 5
             axs[idx_x, idx_y].imshow(img)
             axs[idx_x, idx_y].set_title(label)
         plt.show()
+
+    def get_num_class(self):
+        return len(self.df["class"].unique())
 
 
 class SmokeDataset(Dataset):
@@ -103,12 +109,14 @@ class SmokeDataset(Dataset):
         # self._data_process.draw_pic()
 
     def __len__(self):
-        return len(self._data_process._df)
+        return len(self._data_process.df)
 
     def __getitem__(self, idx):
-        img_path = self._data_process._df["path"][idx]
-        img = plt.imread(img_path)
-        label = self._data_process._df["class"][idx]
+        img_path = self._data_process.df["path"][idx]
+        img = cv2.imread(img_path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(img)
+        label = self._data_process.df["class"][idx]
         sample = {"img": img, "label": label}
         if self._transform:
             sample["img"] = self._transform(sample["img"])

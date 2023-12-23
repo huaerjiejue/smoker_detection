@@ -2,13 +2,15 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2023/12/17 15:47
 # @Author : ZhangKuo
-import pytest
-from utils.transform import Transform
-import matplotlib.pyplot as plt
-from utils.data_process import DataProcess
 from random import randint
-from PIL import Image
+
 import cv2
+import matplotlib.pyplot as plt
+import pytest
+from PIL import Image
+
+from utils.data_process import DataProcess
+from utils.transform import Transform
 
 
 class TestTransform:
@@ -39,9 +41,9 @@ class TestTransform:
         # 随机选取5张图片
         for i in range(5):
             # 随机选取一张图片
-            index = randint(0, len(data_process_train._df))
+            index = randint(0, len(data_process_train.df))
             # 读取图片
-            img = cv2.imread(data_process_train._df.iloc[index]["path"])
+            img = cv2.imread(data_process_train.df.iloc[index]["path"])
             # 对图片进行数据增强
             ori_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(ori_img)
@@ -63,9 +65,9 @@ class TestTransform:
         # 随机选取5张图片
         for i in range(5):
             # 随机选取一张图片
-            index = randint(0, len(data_process_test._df))
+            index = randint(0, len(data_process_test.df))
             # 读取图片
-            img = cv2.imread(data_process_test._df.iloc[index]["path"])
+            img = cv2.imread(data_process_test.df.iloc[index]["path"])
             # 对图片进行数据增强
             ori_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(ori_img)
