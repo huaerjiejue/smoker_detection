@@ -129,3 +129,6 @@ class SmokeDataset(Dataset):
             shuffle=shuffle,
             num_workers=num_workers,
         )
+
+    def get_num_class(self):
+        return self._data_process.get_num_class()

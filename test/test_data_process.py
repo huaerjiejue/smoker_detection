@@ -33,3 +33,9 @@ class TestDataProcess:
     def test_draw_pic(self, get_data):
         get_data.draw_pic()
         assert True
+
+    def test_get_num_class(self, get_data):
+
+        num_class = get_data.get_num_class()
+        assert num_class == 2
+        assert True
