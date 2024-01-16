@@ -11,6 +11,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import numpy as np
 from torch.utils.data import Dataset, DataLoader
 
 """
@@ -44,12 +45,12 @@ class DataProcess:
             label = label.split("_")[0].lower()
             # label = str(label).lower()
             if label == self._labels[0]:
-                class_ = 0
+                class_ = 0.0
                 new_df = pd.DataFrame(
                     {"path": [file_name], "label": [label], "class": class_}, index=[1]
                 )
             elif label == self._labels[1]:
-                class_ = 1
+                class_ = 1.0
                 new_df = pd.DataFrame(
                     {"path": [file_name], "label": [label], "class": class_}, index=[1]
                 )
@@ -116,7 +117,10 @@ class SmokeDataset(Dataset):
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = Image.fromarray(img)
-        label = self._data_process.df["class"][idx]
+        # label = self._data_process.df["class"][idx]
+        # label为一个one-hot向量
+        label = np.zeros(2)
+        label[self._data_process.df["class"][idx]] = 1
         sample = {"img": img, "label": label}
         if self._transform:
             sample["img"] = self._transform(sample["img"])

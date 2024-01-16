@@ -25,7 +25,7 @@ class TestModel:
         return pretreatment
 
     def test_handle_data(self, pretreatment):
-        pretreatment._handle_data()
+        pretreatment.handle_data()
         print("\ntrain_dataloader: ")
         print(pretreatment.train_dataloader.dataset[0]["img"].shape)
         print(len(pretreatment.train_dataloader.dataset))
@@ -53,6 +53,6 @@ class TestModel:
         assert True
 
     def test_handle_model(self, pretreatment):
-        pretreatment._handle_data()
-        pretreatment._handle_model()
+        pretreatment.handle_data()
+        pretreatment.handle_model()
         assert pretreatment.model.head.out_features == 2

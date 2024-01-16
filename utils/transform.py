@@ -2,6 +2,7 @@
 # _*_ coding: utf-8 _*_
 # @Time : 2023/12/17 14:39
 # @Author : ZhangKuo
+import torch
 from torchvision.transforms import v2
 
 
@@ -32,7 +33,8 @@ class Transform:
                 v2.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
                 v2.RandomGrayscale(p=0.025),
                 v2.RandomRotation(15),
-                v2.ToTensor(),
+                v2.ToImage(),
+                v2.ToDtype(torch.float32, scale=True),
                 v2.Normalize(self._mean, self._std),
             ]
         )
@@ -45,7 +47,7 @@ class Transform:
         return v2.Compose(
             [
                 v2.Resize(self._resize),
-                v2.ToTensor(),
+                v2.ToDtype(torch.float32, scale=True),
                 v2.Normalize(self._mean, self._std),
             ]
         )
